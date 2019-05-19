@@ -1,10 +1,12 @@
+/* eslint-disable */
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Link, graphql } from 'gatsby'
+import styled, { css, ThemeProvider } from 'styled-components'
 
+import theme from '../themes/default'
 import Layout from '../components/Layout'
-import Features from '../components/Features'
-import BlogRoll from '../components/BlogRoll'
+import { FullWidthImage, ButtonStyle } from '../components/Common'
 import logo from '../img/logo.svg'
 
 export const IndexPageTemplate = ({
@@ -17,19 +19,10 @@ export const IndexPageTemplate = ({
   intro,
 }) => (
   <div>
-    <div
-      className="full-width-image margin-top-0"
-      style={{
-        backgroundImage: `url(${
-          !!image.childImageSharp ? image.childImageSharp.fluid.src : image
-        })`,
-        backgroundPosition: `center`,
-        backgroundAttachment: `fixed`,
-        minHeight: `calc(100vh - 52px)`,
-        'position': 'relative',
-      }}
-    >
-      <div style={{ position: 'absolute', 'top': 0, 'left': 0, 'right': 0, 'bottom': 0, background: 'rgba(255,255,255,0.5)'}}/>
+    <FullWidthImage backgroundImage={image} imageStyle={css`
+      filter: brightness(1.1);
+      opacity: 0.6;
+    `}>
       <div style={{
         display: 'flex',
         flexDirection: 'column',
@@ -43,9 +36,12 @@ export const IndexPageTemplate = ({
             flexGrow: 1,
             display: 'flex',
             alignItems: 'center',
+            flexDirection: 'column',
           }}
         >
+          <Separator/>
           <img src={logo} alt="Edvice" style={{ width: '170px', height: '150px' }} />
+          <Separator/>
         </div>
         <div
           style={{
@@ -54,42 +50,42 @@ export const IndexPageTemplate = ({
             justifyContent: 'space-around',
             alignItems: 'center',
             flexDirection: 'row',
-            padding: '20px 10px',
+            padding: '28px 10px',
             alignSelf: 'flex-end',
+            position: 'absolute',
+            bottom: 0,
           }}
         >
-          <Button to="/patients">Patients</Button>
-          <Button to="/index">Specialists</Button>
+          <Button to="/patients" style={{marginLeft: '30vw'}}>Patients</Button>
+          <Button to="/index" style={{marginRight: '30vw'}}>Specialists</Button>
         </div>
       </div>
-    </div>
+    </FullWidthImage>
     {/*<PitchSection mainpitch={mainpitch} heading={heading} description={description} intro={intro} />*/}
   </div>
 )
 
-//#64CAC2
-//#59B4DC
+const Button = styled(Link).attrs({
+  className: 'button is-size-6'
+})`
+  ${ButtonStyle}
+  min-width: 120px;
+  margin: 0 15px;
+`;
 
-const Button = ({ children, to }) => (
-  <Link className="btn" to={to}
-    style={{
-      display: 'block',
-      textAlign: 'center',
-      // background: 'rgb(100,202,194)',
-      background: 'linear-gradient(110deg, rgba(100,202,194,1) 0%, rgba(89,180,220,1) 100%)',
-      color: '#fff',
-      boxShadow: '0px 0px 3px 0px rgba(0,0,0,0.1)',
-      borderRadius: '3px',
-      fontSize: '1rem',
-      padding: '10px',
-      width: '45%',
-      maxWidth: '250px',
-      margin: '0 10px',
-    }}
-  >
-    { children }
-  </Link>
-);
+const Separator = styled.div`
+  flex-grow: 1;
+  position: relative;
+  &:after {
+    content: '';
+    width: 1px;
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    background-color: ${props => props.theme.colors.white};
+  }
+`
 
 const PitchSection = ({ mainpitch, heading, description, intro, }) => (
   <section className="section section--gradient">
@@ -157,17 +153,19 @@ const IndexPage = ({ data }) => {
   const { frontmatter } = data.markdownRemark
 
   return (
-    <Layout>
-      <IndexPageTemplate
-        image={frontmatter.image}
-        title={frontmatter.title}
-        heading={frontmatter.heading}
-        subheading={frontmatter.subheading}
-        mainpitch={frontmatter.mainpitch}
-        description={frontmatter.description}
-        intro={frontmatter.intro}
-      />
-    </Layout>
+    <ThemeProvider theme={theme}>
+      <Layout>
+        <IndexPageTemplate
+          image={frontmatter.image}
+          title={frontmatter.title}
+          heading={frontmatter.heading}
+          subheading={frontmatter.subheading}
+          mainpitch={frontmatter.mainpitch}
+          description={frontmatter.description}
+          intro={frontmatter.intro}
+        />
+      </Layout>
+    </ThemeProvider>
   )
 }
 
