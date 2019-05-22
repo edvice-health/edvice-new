@@ -84,9 +84,9 @@ const SelectWrapper = styled.div.attrs({
   }
 `
 
-export const Select = ({ name, placeholder, items, style }) => (
+export const Select = ({ name, placeholder, items, style, onChange }) => (
     <SelectWrapper style={style}>
-      <select name={name}>
+      <select name={name} onChange={onChange}>
         <option value="">{placeholder}</option>
         {items.map(({title, value}) => (
           <option key={value} value={value}>{title}</option>
@@ -107,6 +107,7 @@ export const ButtonStyle = css`
   text-transform: uppercase;
 `
 
-export const Button = styled.button.attrs({
-  className: 'button is-size-6'
-})`${ButtonStyle}`
+export const Button = styled.button.attrs(props => ({
+  className: 'button is-size-6',
+  disabled: props.disabled
+}))`${ButtonStyle}`
